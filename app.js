@@ -6,14 +6,18 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const chalk = require('chalk');
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').load();
 const mongoose = require('mongoose');
 const mysql = require('mysql');
 const passport = require('passport');
 
+const env = process.env.NODE_ENV || 'development';
+const dbconfig = require('./config/config')[env];
+
 /**
  * Route controller
  */
+const experience = require('./controllers/experience');
 
 
  /**
@@ -29,9 +33,11 @@ const app = express();
  * Connect to MongoDB.
  */
 
- /**
+/**
  * Connect to mysql
  */
+var connection = mysql.createConnection(dbconfig.mysql);
+connection.connect((err)=> { if(err) { throw err}});
 
  /**
  * Express configuration.
@@ -45,9 +51,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Website routes
  */
-app.get('/', function(req, res) {
+//test api
+app.get('/api', function(req, res) {
 	res.json({data: "success"});
 });
+
+// Experience routes
+app.get('/api/experience', function(req, res) {
+	connection.query('SELECT id, programs_id from resorts', function (error, results, fields) {
+	   if (error) throw error;
+	   console.log()
+	   res.json({data: results})
+	});
+});
+
+app.get('/api/experience/:resort_id', experience.getExperiences);
 
 
 /**
