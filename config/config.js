@@ -4,7 +4,8 @@ var db = {
             host: 'localhost',
             user: 'root',
             password: 'root',
-            database: 'purastays'
+            database: 'purastays',
+            port: 3306,
         },
 
         mongodb: {
@@ -16,7 +17,8 @@ var db = {
             host: 'localhost',
             user: 'root',
             password: 'root',
-            database: 'purastays'
+            database: 'purastays',
+            port: 3306,
         },
 
         mongodb: {
