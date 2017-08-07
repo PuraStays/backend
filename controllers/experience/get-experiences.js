@@ -7,6 +7,7 @@
  */
 const mysql = require('mysql');
 const query = require('../../config/db').query;
+const Promise = require('bluebird');
 
 
 //getting stay programs array
@@ -46,6 +47,7 @@ var getProgramIdArray = function(id) {
 }
 
 var getProgramArrayQry = function(id) {
+
 	var params = [id];
 	var qry = 'SELECT id, Program_Title, Group1, Group2, Group3, Group4, Group5 from stayprograms where id = ?';
 	
@@ -54,13 +56,45 @@ var getProgramArrayQry = function(id) {
 	})
 }
 
+var getProgramArray = function(arr) {
+	//return new Promise(function(resolve, reject) {
+		var programs = [];
+		//arr.forEach(function(id, index, array) {
+		Promise.map(arr, function(id) {
+			return getProgramArrayQry(id).then(function(results) {
+				
+				return results;
+				//programs.push(progItem);
+				// if(index == array.length-1) {
+				// 	console.log(arr);
+				// 	console.log(programs);					
+				// 	return resolve(programs);
+				// }			
+			})
+		}).each(function(result) {
+			var progItem = {
+				"id": result[0].id, 
+				"program_title": result[0].Program_Title
+			};	
+			programs.push(progItem);
+		}).then(function(result) {
+			return programs;
+		})
+	//})
+}
+
 
 module.exports = (req, res) => {
 	return getProgramIdArray(req.params.resort_id).then(function (result) {		
 		
 		var finalObject = {};
 		finalObject.resort_name = result.resort_name;
-		var programs = [];	
+
+		getProgramArray(result.programsArr).then(function(x) {
+			res.json({data: x});
+		});
+		
+		/*var programs = [];	
 		console.log(result.programsArr);
 		result.programsArr.forEach(function(id, index, array) {
 			getProgramArrayQry(id).then(function(results) {
@@ -76,7 +110,7 @@ module.exports = (req, res) => {
 					res.json({data: finalObject})
 				}			
 			})
-		})
+		})*/
 
 	});
 
