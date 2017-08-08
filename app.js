@@ -44,7 +44,7 @@ app.set('port', process.env.PORT || 3000);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(expressStatusMonitor());
+//app.use(expressStatusMonitor());
 
 /**
  * Website routes
