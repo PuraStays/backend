@@ -10,7 +10,7 @@ const dotenv = require('dotenv').load();
 const mongoose = require('mongoose');
 const mysql = require('mysql');
 const passport = require('passport');
-const expressStatusMonitor = require('express-status-monitor');
+//const expressStatusMonitor = require('express-status-monitor');
 const Promise = require('bluebird');
 
 /**
