@@ -57,30 +57,22 @@ var getProgramArrayQry = function(id) {
 }
 
 var getProgramArray = function(arr) {
-	//return new Promise(function(resolve, reject) {
-		var programs = [];
-		//arr.forEach(function(id, index, array) {
-		Promise.map(arr, function(id) {
-			return getProgramArrayQry(id).then(function(results) {
-				
-				return results;
-				//programs.push(progItem);
-				// if(index == array.length-1) {
-				// 	console.log(arr);
-				// 	console.log(programs);					
-				// 	return resolve(programs);
-				// }			
-			})
-		}).each(function(result) {
-			var progItem = {
-				"id": result[0].id, 
-				"program_title": result[0].Program_Title
-			};	
-			programs.push(progItem);
-		}).then(function(result) {
-			return programs;
+	var programs = [];
+	//arr.forEach(function(id, index, array) {
+	return Promise.map(arr, function(id) {
+		return getProgramArrayQry(id).then(function(results) {								
+			return results;							
 		})
-	//})
+	}).each(function(result) {
+		var progItem = {
+			"id": result[0].id, 
+			"program_title": result[0].Program_Title,
+			"activities": formatProgramIds(result[0])
+		};	
+		programs.push(progItem);
+	}).then(function(result) {
+		return programs;
+	})
 }
 
 
@@ -91,62 +83,10 @@ module.exports = (req, res) => {
 		finalObject.resort_name = result.resort_name;
 
 		getProgramArray(result.programsArr).then(function(x) {
-			res.json({data: x});
+			finalObject.programs = x;
+			res.json({data: finalObject});
 		});
-		
-		/*var programs = [];	
-		console.log(result.programsArr);
-		result.programsArr.forEach(function(id, index, array) {
-			getProgramArrayQry(id).then(function(results) {
-				var progItem = {
-					"id": results[0].id, 
-					"program_title": results[0].Program_Title
-				};
-				console.log(progItem);		
-				programs.push(progItem);
-				if(index == array.length-1) {
-					finalObject.programs = programs;
-					delete finalObject.programsArr;
-					res.json({data: finalObject})
-				}			
-			})
-		})*/
 
 	});
 
-
-	
-
-	//getting resort
-	/*mysqlDb.connect.query('SELECT Resort_Name, programs_id from resorts where id='+req.params.resort_id, (error, results, fields) => {
-	    if (error) throw error;
-	    var responseData = {
-	    	"resort_name": results[0].Resort_Name,
-	    	"experiences": []
-	    }; //json object need to be returned
-	    //converting programs id string array to int array 
-	    var programs = programArray(results[0]);
-
-	    //getting stayprograms group ids
-	    var experiencesList = []; //to be add in response
-	    programs.forEach((item)=> {		   	
-		   	connection.query('SELECT id, Program_Title, Group1, Group2, Group3, Group4, Group5 from stayprograms where id='+item, (error, results) => {
-	   	  			   	  		
-				//convert comma separated string to array				
-				var groupArray = stayProgramsArr(results[0]);
-				
-				//getting activities ids
-			    groupArray.forEach((item) => {
-			    	connection.query('SELECT * from stayprogramsgroups where id='+item, (error, results) => {
-			    		//console.log(results[0]);
-			    		var activityIds = activityArray(results[0]);
-			    		console.log(activities_id);			    
-			    	})
-			    });
-
-			    res.json({data: responseData});
-	   	    });
-	   });
-	   
-	});*/
 }
