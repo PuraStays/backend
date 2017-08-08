@@ -27,7 +27,6 @@ const Promise = require('bluebird');
  */
 const experience = require('./controllers/experience');
 
-
  /**
  * API keys and Passport configuration.
  */
@@ -57,7 +56,7 @@ app.get('/api', (req, res) => {
 
 // get experiences
 app.get('/api/experience/:resort_id', experience.getExperiences);
-
+app.get('/api/activity/:activity_id', experience.getActivity);
 
 /**
  * Booking routes

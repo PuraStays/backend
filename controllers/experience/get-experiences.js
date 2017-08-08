@@ -1,10 +1,6 @@
 /**
  * GET experiences
  */
-
-/**
- * Connect to mysql
- */
 const mysql = require('mysql');
 const query = require('../../config/db').query;
 const Promise = require('bluebird');
@@ -88,5 +84,4 @@ module.exports = (req, res) => {
 		});
 
 	});
-
 }

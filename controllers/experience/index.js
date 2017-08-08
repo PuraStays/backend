@@ -3,5 +3,6 @@
  */
 
 module.exports = {
-	getExperiences: require('./get-experiences')
+	getExperiences: require('./get-experiences'),
+	getActivity: require('./get-activity')
 };
