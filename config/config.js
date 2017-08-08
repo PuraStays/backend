@@ -1,6 +1,7 @@
 var db = {
     development: {
         mysql: {
+            connectionLimit : 10,
             host: 'localhost',
             user: 'root',
             password: 'root',
@@ -14,6 +15,7 @@ var db = {
     },
     production: {
         mysql: {
+            connectionLimit : 10,
             host: 'localhost',
             user: 'root',
             password: 'root',
