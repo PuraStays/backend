@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 const Promise = require('bluebird');
 const env = process.env.NODE_ENV || 'development';
-const dbconfig = require('./config')[env];
+const dbconfig = require('./config');
 let using = Promise.using;
 Promise.promisifyAll(require('mysql/lib/Connection').prototype);
 Promise.promisifyAll(require('mysql/lib/Pool').prototype);
@@ -10,14 +10,14 @@ let pool = mysql.createPool(dbconfig.mysql);
 
 let getConnection = function () {
  return pool.getConnectionAsync().disposer(function (connection) {
- return connection.destroy();
+   connection.release();
  });
 };
 
 var query = function (command) {
- return using(getConnection(), function (connection) {
- return connection.queryAsync(command);
- });
+  return using(getConnection(), function (connection) {
+    return connection.queryAsync(command);
+  });
 };
 
 module.exports = {

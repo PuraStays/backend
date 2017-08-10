@@ -31,13 +31,14 @@ function formatProgramIds(args) {
 
 var getProgramIdArray = function(id) {
 	var params = [id];
-
 	//program id from program groups in resort table
 	var qry = 'SELECT Resort_Name, programs_id from resorts where id = ?';
 	return query(mysql.format(qry, params)).then(function (results) {
-		var programArr = (results[0].programs_id.replace(/,\s*$/, '')).split(",").map((item) => {
+		console.log(results);
+		var rowResult = JSON.parse(JSON.stringify(results[0]));		
+		var programArr = (rowResult.programs_id.replace(/,\s*$/, '')).split(",").map((item) => {
 		   return parseInt(item, 10);
-	    });	
+	    });
 		return {"resort_name": results[0].Resort_Name, "programsArr": programArr};
 	});
 }
