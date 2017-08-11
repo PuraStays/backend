@@ -24,7 +24,7 @@ function formatProgramIds(args) {
     //removing duplicate item in array, same program in different group
 	groupArray = groupArray.filter((elem, index, self) => {
 	    return index == self.indexOf(elem);
-	})
+	});
 	return groupArray;
 }
 
@@ -34,10 +34,14 @@ var getProgramIdArray = function(id) {
 	//program id from program groups in resort table
 	var qry = 'SELECT id, Resort_Name, programs_id from resorts where id = ?';
 	return query(mysql.format(qry, params)).then(function (results) {
-		var programArr = (results[0].programs_id.replace(/,\s*$/, '')).split(",").map((item) => {
-		   return parseInt(item, 10);
-	    });
-		return {"resort_name": results[0].Resort_Name, "programsArr": programArr};
+	    if(results.length) {		
+			var programArr = (results[0].programs_id.replace(/,\s*$/, '')).split(",").map((item) => {
+			   return parseInt(item, 10);
+		    });
+			return {"resort_name": results[0].Resort_Name, "programsArr": programArr};
+		} else {
+			return null;
+		}
 	});
 }
 
@@ -71,15 +75,33 @@ var getProgramArray = function(arr) {
 
 
 module.exports = (req, res) => {
-	return getProgramIdArray(req.params.resort_id).then(function (result) {		
-		
-		var finalObject = {};
-		finalObject.resort_name = result.resort_name;
+	if(req.params.resort_id) {
+        return getProgramIdArray(req.params.resort_id).then(function (result) {	        	
+			var finalObject = {};
+			console.log(result);
+			if(result === null) {
+				res.json({
+					data: {
+						error: "true",
+						errorMessage: "no result found"
+					}
+				});
+			} else {
+				finalObject.resort_name = result.resort_name;
 
-		getProgramArray(result.programsArr).then(function(x) {
-			finalObject.programs = x;
-			res.json({data: finalObject});
+				getProgramArray(result.programsArr).then(function(x) {
+					finalObject.programs = x;
+					res.json({data: finalObject});
+				});
+			}			
 		});
-
-	});
+	} else {
+		res.json({
+			data: {
+				error: "true",
+				errorMessage: "Please specify resort id"
+			}
+		});
+	}
 }
+

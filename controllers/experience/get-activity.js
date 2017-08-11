@@ -16,7 +16,16 @@ var getActivityById = function(id) {
 }
 
 module.exports = (req, res) => {
-	getActivityById(req.params.activity_id).then(function(results) {
-		res.json({data: results});
-	})
+	if(req.params.activity_id) {
+		getActivityById(req.params.activity_id).then(function(results) {
+			res.json({data: results});
+		})
+	} else {
+		res.json({
+			data: {
+				error: "true",
+				errorMessage: "Please specify activity id"
+			}
+		});
+	}
 }
