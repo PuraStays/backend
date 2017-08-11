@@ -32,11 +32,9 @@ function formatProgramIds(args) {
 var getProgramIdArray = function(id) {
 	var params = [id];
 	//program id from program groups in resort table
-	var qry = 'SELECT Resort_Name, programs_id from resorts where id = ?';
+	var qry = 'SELECT id, Resort_Name, programs_id from resorts where id = ?';
 	return query(mysql.format(qry, params)).then(function (results) {
-		console.log(results);
-		var rowResult = JSON.parse(JSON.stringify(results[0]));		
-		var programArr = (rowResult.programs_id.replace(/,\s*$/, '')).split(",").map((item) => {
+		var programArr = (results[0].programs_id.replace(/,\s*$/, '')).split(",").map((item) => {
 		   return parseInt(item, 10);
 	    });
 		return {"resort_name": results[0].Resort_Name, "programsArr": programArr};
@@ -47,7 +45,6 @@ var getProgramArrayQry = function(id) {
 
 	var params = [id];
 	var qry = 'SELECT id, Program_Title, Group1, Group2, Group3, Group4, Group5 from stayprograms where id = ?';
-	
 	return query(mysql.format(qry, params)).then(function(results) {
 		return results;
 	})
