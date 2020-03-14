@@ -70,8 +70,7 @@ function getActivityById(id) {
 
 module.exports = (req, res) => {
 	if(req.params.activity_id) {
-		getActivityById(req.params.activity_id).then(function(results) {
-			console.log(results.data)
+		getActivityById(req.params.activity_id).then(function(results) {		console.log(results.data)
 			if(results.data === null) {
 				res.json({data: "no activity found"});				
 			} else {		
